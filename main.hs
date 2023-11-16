@@ -40,19 +40,20 @@ turn board =
   if numTiles O board == numTiles X board then O else X
   where numTiles tile = length . filter ((== tile) . snd)
 
-nextTurn O = X
-nextTurn X = O
+next :: Tile -> Tile
+next O = X
+next X = O
 
-winner :: Board -> Maybe Result
-winner board
+finished :: Board -> Maybe Result
+finished board
   | check O board     = Just Win
   | check X board     = Just Loss
   | length board == 9 = Just Draw
   | otherwise         = Nothing
   where
     check tile board =
-      let allTile = all (== Just tile)
-       in any allTile (rows board ++ cols board ++ [dia1 board, dia2 board])
+      let allTile = all (== Just tile) in
+      any allTile (rows board ++ cols board ++ [dia1 board, dia2 board])
 
 
 -- Minimax Algorithm:
@@ -61,16 +62,14 @@ possibleMoves :: Tile -> Board -> [Board]
 possibleMoves turn board =
   map ((: board) . (, turn)) . filter (isNothing . (`lookup` board)) $ [0 .. 8]
 
-minimax :: Tile -> Board -> (Board, Int)
+minimax :: Tile -> Board -> Int 
 minimax turn board =
-  case winner board of
-    Just t -> (board, score t)
+  case finished board of
+    Just result -> score result
     Nothing ->
       case turn of
-        O -> maximumBy val (map (\b -> (b, snd $ minimax X b)) (possibleMoves O board))
-        X -> minimumBy val (map (\b -> (b, snd $ minimax O b)) (possibleMoves X board))
-        where
-          val = compare `on` snd
+        O -> maximum . map (minimax X) $ possibleMoves O board
+        X -> minimum . map (minimax O) $ possibleMoves X board
 
 
 -- Play the game
@@ -79,19 +78,26 @@ play turn board = do
   coord <- getLine
   return ((read coord :: Int, turn) : board)
 
+playAI :: Tile -> Board -> IO Board
+playAI X = do
+  return
+  . minimumBy (compare `on` minimax O)
+  . possibleMoves X
+
 game :: Tile -> Board -> IO ()
 game turn board =
-  case winner board of
-    Just t -> putStrLn (show t ++ "!")
+  case finished board of
+    Just result -> putStrLn (show result ++ "!")
     Nothing -> do
       putStrLn (show turn ++ "'s turn:")
       board <- do 
         if turn == O then play turn board
-        else return (fst (minimax turn board))
+        else playAI turn board
       printBoard board
-      game (nextTurn turn) board
+      game (next turn) board
 
 main :: IO ()
 main = do
   putStrLn "Tic Tac Toe"
+  printBoard []
   game O []
