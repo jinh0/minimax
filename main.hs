@@ -1,7 +1,9 @@
-import Data.List (intercalate)
+import Data.List (intercalate, maximumBy, minimumBy)
 import Data.Maybe (isNothing)
+import Data.Function (on)
 
 data Tile = O | X deriving (Show, Eq)
+data Result = Win | Loss | Draw deriving (Show)
 
 type Board = [(Int, Tile)]
 
@@ -28,9 +30,10 @@ printBoard = putStr . showBoard
 
 
 -- Utility functions
-value :: Tile -> Int
-value O = 1
-value X = -1
+score :: Result -> Int
+score Win = 1
+score Draw = 0
+score Loss = -1
 
 turn :: Board -> Tile
 turn board =
@@ -40,11 +43,12 @@ turn board =
 nextTurn O = X
 nextTurn X = O
 
-winner :: Board -> Maybe Tile
+winner :: Board -> Maybe Result
 winner board
-  | check O board = Just O
-  | check X board = Just X
-  | otherwise     = Nothing
+  | check O board     = Just Win
+  | check X board     = Just Loss
+  | length board == 9 = Just Draw
+  | otherwise         = Nothing
   where
     check tile board =
       let allTile = all (== Just tile)
@@ -57,27 +61,34 @@ possibleMoves :: Tile -> Board -> [Board]
 possibleMoves turn board =
   map ((: board) . (, turn)) . filter (isNothing . (`lookup` board)) $ [0 .. 8]
 
-minimax :: Board -> Int
-minimax board =
+minimax :: Tile -> Board -> (Board, Int)
+minimax turn board =
   case winner board of
-    Just t -> value t
+    Just t -> (board, score t)
     Nothing ->
-      case turn board of
-        O -> (maximum . map minimax) (possibleMoves O board)
-        X -> (minimum . map minimax) (possibleMoves X board)
+      case turn of
+        O -> maximumBy val (map minimax' (possibleMoves O board))
+        X -> minimumBy val (map minimax' (possibleMoves X board))
+        where
+          val = compare `on` snd
+          minimax' b = (b, snd $ minimax O b)
 
 
 -- Play the game
+play :: Tile -> Board -> IO Board
 play turn board = do
   coord <- getLine
   return ((read coord :: Int, turn) : board)
 
+game :: Tile -> Board -> IO ()
 game turn board =
   case winner board of
-    Just t -> putStrLn (show t ++ " won!")
+    Just t -> putStrLn (show t ++ "!")
     Nothing -> do
       putStrLn (show turn ++ "'s turn:")
-      board <- play turn board
+      board <- do 
+        if turn == O then play turn board
+        else return (fst (minimax turn board))
       printBoard board
       game (nextTurn turn) board
 
