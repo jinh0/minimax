@@ -67,11 +67,10 @@ minimax turn board =
     Just t -> (board, score t)
     Nothing ->
       case turn of
-        O -> maximumBy val (map minimax' (possibleMoves O board))
-        X -> minimumBy val (map minimax' (possibleMoves X board))
+        O -> maximumBy val (map (\b -> (b, snd $ minimax X b)) (possibleMoves O board))
+        X -> minimumBy val (map (\b -> (b, snd $ minimax O b)) (possibleMoves X board))
         where
           val = compare `on` snd
-          minimax' b = (b, snd $ minimax O b)
 
 
 -- Play the game
