@@ -1,8 +1,6 @@
 module Tictactoe.Game (initGame) where
 
 import Common
-import Data.Function (on)
-import Data.List (intercalate, maximumBy, minimumBy)
 import Data.Maybe (isNothing)
 import Minimax
 import Playable

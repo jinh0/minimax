@@ -2,7 +2,6 @@ module Playable where
 
 import Common
 import Minimax
-import Tictactoe.Board
 
 class (Minimax b, Show b) => Playable b where
   play :: Player -> b -> IO b

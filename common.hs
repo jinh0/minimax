@@ -6,6 +6,10 @@ next :: Player -> Player
 next O = X
 next X = O
 
+showPlayer Nothing = "_"
+showPlayer (Just O) = "O"
+showPlayer (Just X) = "X"
+
 data Result = Win | Loss | Draw deriving (Show)
 
 score :: Result -> Int
