@@ -4,7 +4,7 @@ import Common
 import Data.Bits
 import Data.Int (Int64)
 import Data.List (find)
-import Data.Maybe (isNothing)
+import Data.Maybe (fromJust, isNothing)
 
 newtype Board = Board
   { tiles :: (Int64, Int64)
@@ -12,8 +12,33 @@ newtype Board = Board
 
 empty = Board{tiles = (0, 0)}
 
-col board x =
+add board turn col =
+  case turn of
+    O -> Board{tiles = (bit coord .|. os, xs)}
+    X -> Board{tiles = (os, bit coord .|. xs)}
+  where
+    (os, xs) = tiles board
+    coord = (fromJust (top board col) * 7) + col
+
+top board x =
   find (isNothing . at board . (+ x) . (* 7)) $ reverse [0 .. 5]
+
+full board = (popCount os + popCount xs) == 42
+  where
+    (os, xs) = tiles board
+
+win turn board =
+  isWinner row [0 .. 3] [0 .. 5]
+    || isWinner col [0 .. 6] [0 .. 2]
+    || isWinner diag [0 .. 3] [0 .. 2]
+  where
+    (os, xs) = tiles board
+    player = if turn == O then os else xs
+    isWinner line xx yy =
+      any (\line -> (line .&. player) == line) [line (x, y) | x <- xx, y <- yy]
+    row (x, y) = shiftL 15 (y * 7 + x)
+    col (x, y) = shiftL 2113665 (y * 7 + x)
+    diag (x, y) = shiftL 16843009 (y * 7 + x)
 
 at :: Board -> Int -> Maybe Player
 at board x
