@@ -1,0 +1,6 @@
+indentation: 2
+indent-wheres: true
+newlines-between-decls: 1
+let-style: newline
+in-style: no-space
+respectful: false
