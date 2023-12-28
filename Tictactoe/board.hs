@@ -1,11 +1,16 @@
-module Tictactoe.Board (Board, printBoard, rows, cols, dia1, dia2) where
+module Tictactoe.Board where
 
 import Common
 
-type Board = [(Int, Player)]
+newtype Board = Board
+  { tiles :: [(Int, Player)]
+  }
 
-elems :: [Int] -> Board -> [Maybe Player]
-elems indices board = map (`lookup` board) indices
+empty = Board{tiles = []}
+
+add board tile = Board{tiles = tile : tiles board}
+
+elems indices b = map (`lookup` tiles b) indices
 
 rows = allLines row where row n = elems [(n * 3) .. (n * 3) + 2]
 cols = allLines col where col n = elems [n, n + 3, n + 6]
@@ -13,10 +18,9 @@ cols = allLines col where col n = elems [n, n + 3, n + 6]
 
 allLines line board = map (`line` board) [0 .. 2]
 
-showBoard = unlines . map (unwords . map showTile) . rows
-  where
-    showTile Nothing = "_"
-    showTile (Just O) = "O"
-    showTile (Just X) = "X"
-
-printBoard = putStrLn . showBoard
+instance Show Board where
+  show = unlines . map (unwords . map showTile) . rows
+    where
+      showTile Nothing = "_"
+      showTile (Just O) = "O"
+      showTile (Just X) = "X"
