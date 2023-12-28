@@ -18,3 +18,9 @@ class (Minimax b, Show b) => Playable b where
             else playAI turn board
         print board
         game (next turn) board
+
+  initGame :: String -> b -> IO ()
+  initGame name empty = do
+    print name
+    print empty
+    game O empty

@@ -1,4 +1,4 @@
-module Tictactoe.Game (initGame) where
+module Tictactoe.Game (playGame) where
 
 import Common
 import Data.Maybe (isNothing)
@@ -27,8 +27,4 @@ instance Playable Board where
     coord <- getLine
     return (add board (read coord :: Int, turn))
 
-initGame :: IO ()
-initGame = do
-  putStrLn "Tic Tac Toe"
-  print empty
-  game O empty
+playGame = initGame "Tic Tac Toe" (Board{tiles = []})

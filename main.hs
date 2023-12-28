@@ -1,4 +1,4 @@
-import Tictactoe.Game (initGame)
+import Tictactoe.Game (playGame)
 
 main :: IO ()
-main = initGame
+main = playGame

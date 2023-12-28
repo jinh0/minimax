@@ -6,8 +6,6 @@ newtype Board = Board
   { tiles :: [(Int, Player)]
   }
 
-empty = Board{tiles = []}
-
 add board tile = Board{tiles = tile : tiles board}
 
 elems indices b = map (`lookup` tiles b) indices
