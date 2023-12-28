@@ -1,28 +1,12 @@
 module Tictactoe.Game (initGame) where
 
+import Common
 import Data.Function (on)
 import Data.List (intercalate, maximumBy, minimumBy)
 import Data.Maybe (isNothing)
 import Tictactoe.Board
 
 -- Utility functions
-score :: Result -> Int
-score Win = 1
-score Draw = 0
-score Loss = -1
-
-turn :: Board -> Player
-turn board =
-  if numTiles O board == numTiles X board
-    then O
-    else X
-  where
-    numTiles tile = length . filter ((== tile) . snd)
-
-next :: Player -> Player
-next O = X
-next X = O
-
 finished :: Board -> Maybe Result
 finished board
   | check O board = Just Win
@@ -56,11 +40,14 @@ play turn board = do
   return ((read coord :: Int, turn) : board)
 
 playAI :: Player -> Board -> IO Board
-playAI X =
+playAI turn =
   do
     return
-    . minimumBy (compare `on` minimax O)
-    . possibleMoves X
+    . optimizeBy turn (compare `on` minimax (next turn))
+    . possibleMoves turn
+  where
+    optimizeBy O = maximumBy
+    optimizeBy X = minimumBy
 
 game :: Player -> Board -> IO ()
 game turn board =

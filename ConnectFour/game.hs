@@ -1,9 +1,10 @@
+module Connectfour.Game where
+
+import Common
 import Data.Bits
 import Data.Int (Int64)
 import Data.List (find)
 import Data.Maybe (isNothing)
-
-data Player = O | X deriving (Show, Eq)
 
 type Board = (,) Int64 Int64
 

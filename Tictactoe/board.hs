@@ -1,7 +1,6 @@
-module Tictactoe.Board where
+module Tictactoe.Board (Board, printBoard, rows, cols, dia1, dia2) where
 
-data Player = O | X deriving (Show, Eq)
-data Result = Win | Loss | Draw deriving (Show)
+import Common
 
 type Board = [(Int, Player)]
 
