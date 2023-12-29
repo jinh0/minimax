@@ -10,7 +10,7 @@ instance Minimax Board where
   finished board
     | check O board = Just Win
     | check X board = Just Loss
-    | length (tiles board) == 9 = Just Draw
+    | full board = Just Draw
     | otherwise = Nothing
     where
       check tile board =
@@ -19,7 +19,7 @@ instance Minimax Board where
 
   possibleMoves turn board =
     map (add board . (,turn))
-      . filter (isNothing . (`lookup` tiles board))
+      . filter (isNothing . at board)
       $ [0 .. 8]
 
 instance Playable Board where
@@ -27,4 +27,4 @@ instance Playable Board where
     coord <- getLine
     return (add board (read coord :: Int, turn))
 
-playGame = initGame "Tic Tac Toe" (Board{tiles = []})
+playGame = initGame "Tic Tac Toe" empty

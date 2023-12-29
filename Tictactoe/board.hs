@@ -1,14 +1,29 @@
 module Tictactoe.Board where
 
 import Common
+import Data.Bits
+import Data.Int (Int16)
 
-newtype Board = Board
-  { tiles :: [(Int, Player)]
-  }
+newtype Board = Board (Int16, Int16) deriving (Eq, Ord)
 
-add board tile = Board{tiles = tile : tiles board}
+empty = Board (0, 0)
 
-elems indices b = map (`lookup` tiles b) indices
+add :: Board -> (Int, Player) -> Board
+add (Board (os, xs)) (coord, turn) = case turn of
+  O -> Board (os .|. bit coord, xs)
+  X -> Board (os, xs .|. bit coord)
+
+at :: Board -> Int -> Maybe Player
+at (Board (os, xs)) coord
+  | (os .&. bit coord) > 0 = Just O
+  | (xs .&. bit coord) > 0 = Just X
+  | otherwise = Nothing
+
+full :: Board -> Bool
+full (Board (os, xs)) = popCount os + popCount xs == 9
+
+elems :: [Int] -> Board -> [Maybe Player]
+elems indices b = map (at b) indices
 
 rows = allLines row where row n = elems [(n * 3) .. (n * 3) + 2]
 
