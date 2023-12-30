@@ -1,5 +1,5 @@
 cabal-version:      3.6
-name:               gofai
+name:               minimax
 version:            0.1.0
 
 library
@@ -24,7 +24,7 @@ library
     hs-source-dirs:   src
     default-language: GHC2021
 
-executable gofai
+executable minimax
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
@@ -34,7 +34,7 @@ executable gofai
     -- other-extensions:
     build-depends:
         base ^>=4.16.4.0,
-        gofai
+        minimax
 
     hs-source-dirs:   app
     default-language: GHC2021
