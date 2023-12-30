@@ -1,3 +1,5 @@
+module Tree where
+
 import Common
 import Minimax
 

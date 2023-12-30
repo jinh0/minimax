@@ -13,14 +13,12 @@ instance Minimax Board where
     | full board = Just Draw
     | otherwise = Nothing
 
-  possibleMoves :: Player -> Board -> [Board]
   possibleMoves turn board =
     map (add board turn)
       . filter (isJust . top board)
       $ [0 .. 6]
 
 instance Playable Board where
-  play :: Player -> Board -> IO Board
   play turn board = do
     col <- getLine
     return (add board turn (read col :: Int))
