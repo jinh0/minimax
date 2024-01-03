@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 
 Board = tuple[int, int]
@@ -21,6 +22,11 @@ class Game(ABC):
     @classmethod
     @abstractmethod
     def print_board(cls, board: Board):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def parse(cls, board_str: str) -> Board:
         pass
 
     @classmethod
@@ -77,3 +83,17 @@ class Playable:
         if result == 1: print("You won!")
         elif result == -1: print("You lost!")
         else: print("Draw!")
+
+    def benchmark(self, file: str):
+        with open(file, 'r') as f:
+            for line in f.readlines():
+                line = line.strip()
+                
+                board = self.game.parse(line)
+                start_time = time.time()
+                result = self.strategy.minimax(board)
+                duration = time.time() - start_time
+
+                self.game.print_board(board)
+                print(f'Result: {result} | Time: {duration:.5f} seconds')
+

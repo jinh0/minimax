@@ -54,3 +54,16 @@ class TicTacToe(Game):
             print()
         print()
 
+    @classmethod
+    def parse(cls, board_str: str) -> Board:
+        if board_str == 'empty':
+            return (0, 0)
+
+        os, xs = 0, 0
+        for i, x in enumerate(board_str):
+            if i % 2 == 0:
+                os |= 1 << int(x)
+            else:
+                xs |= 1 << int(x)
+
+        return (os, xs)
