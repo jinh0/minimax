@@ -1,5 +1,12 @@
 Board = tuple[int, int]
 
+# Configurations for a winning line
+wins = [
+    7, 56, 448, # row
+    73, 146, 292, # col
+    273, 84 # diag
+]
+
 def exists(board: Board, tile: int) -> bool:
     os, xs = board
 
@@ -17,8 +24,4 @@ def turn(board: Board) -> int:
     return ((os | xs).bit_count() + 1) % 2
 
 def finished_player(player: int) -> bool:
-    return bool(
-        ((player & 7) == 7) or ((player & 56) == 56) or ((player & 448) == 448) or # row
-        ((player & 73) == 73) or ((player & 146) == 146) or ((player & 292) == 292) or # col
-        ((player & 273) == 273) or ((player & 84) == 84) # diag
-    )
+    return any((player & win) == win for win in wins)

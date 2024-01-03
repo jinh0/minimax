@@ -13,7 +13,7 @@ class ConnectFour(Game):
         return None
 
     @classmethod
-    def possibleMoves(cls, board: Board) -> list[Board]:
+    def possibleMoves(cls, board: Board, move_ordering = False) -> list[Board]:
         boards = []
 
         for i in range(7):

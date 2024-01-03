@@ -10,7 +10,7 @@ class Game(ABC):
 
     @classmethod
     @abstractmethod
-    def possibleMoves(cls, board: Board) -> list[Board]:
+    def possibleMoves(cls, board: Board, move_ordering = False) -> list[Board]:
         pass
 
     @classmethod

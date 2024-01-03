@@ -1,5 +1,5 @@
 from common.game import Game, Board
-from tictactoe.board import finished_player, exists, at
+from tictactoe.board import finished_player, exists, at, turn, wins
 
 class TicTacToe(Game):
     @classmethod
@@ -13,9 +13,22 @@ class TicTacToe(Game):
         return None
 
     @classmethod
-    def possibleMoves(cls, board: Board) -> list[Board]:
+    def possibleMoves(cls, board: Board, move_ordering = False) -> list[Board]:
         boards = []
         os, xs = board
+
+        if move_ordering:
+            if turn(board) == 1:
+                for w in wins:
+                    # If O is 1 move or less away from winning AND the win does
+                    # not intersect with X,
+                    if (os & w).bit_count() >= 2 and (xs & w) == 0:
+                        return [(os | w, xs)]
+            else:
+                for w in wins:
+                    if (xs & w).bit_count() >= 2 and (os & w) == 0:
+                        return [(os, xs | w)]
+
 
         for i in range(9):
             if not exists(board, i):

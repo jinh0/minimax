@@ -20,7 +20,7 @@ class AlphaBeta(Strategy):
 
     def maxval(self, board: Board, alpha: int, beta: int):
         val = -1
-        for next_board in self.game.possibleMoves(board):
+        for next_board in self.game.possibleMoves(board, True):
             val = max(val, self.ab_search(next_board, alpha, beta))
             alpha = max(val, alpha)
 
@@ -31,7 +31,7 @@ class AlphaBeta(Strategy):
 
     def minval(self, board: Board, alpha: int, beta: int):
         val = 1
-        for next_board in self.game.possibleMoves(board):
+        for next_board in self.game.possibleMoves(board, True):
             val = min(val, self.ab_search(next_board, alpha, beta))
             beta = min(val, beta)
 
