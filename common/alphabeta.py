@@ -7,7 +7,8 @@ class AlphaBeta(Strategy):
 
     @cache
     def ab_search(self, board: Board, alpha = -1, beta = 1) -> int:
-        super().count()
+        if self.debug:
+            super().count()
 
         if (f := self.game.finished(board)) is not None:
             return f

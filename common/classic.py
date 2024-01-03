@@ -5,7 +5,8 @@ from functools import cache
 class ClassicMinimax(Strategy):
     @cache
     def minimax(self, board: Board) -> int:
-        super().count()
+        if self.debug:
+            super().count()
 
         if (f := self.game.finished(board)) is not None:
             return f

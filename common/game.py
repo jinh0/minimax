@@ -31,15 +31,17 @@ class Game(ABC):
 class Strategy(ABC):
     cnt: int
     game: Game
+    debug: bool
 
-    def __init__(self, game):
+    def __init__(self, game, debug):
         self.game = game
         self.cnt = 0
+        self.debug = debug
 
     def count(self):
         self.cnt += 1
 
-        if self.cnt % 1000 == 0:
+        if self.cnt % 100_000 == 0:
             print("Cnt", self.cnt)
 
     @abstractmethod
@@ -50,9 +52,9 @@ class Playable:
     game: Game
     strategy: Strategy
 
-    def __init__(self, game, strategy):
+    def __init__(self, game, strategy, debug=True):
         self.game = game
-        self.strategy = strategy(game)
+        self.strategy = strategy(game, debug)
 
     def play_ai(self, board: Board) -> Board:
         print("X's Turn:")
