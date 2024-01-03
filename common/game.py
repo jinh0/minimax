@@ -61,6 +61,7 @@ class Playable:
         return min(self.game.possibleMoves(board), key=self.strategy.minimax)
 
     def play(self):
+        # board = (0, 240518168576)
         board = (0, 0)
         turn = 1
 
