@@ -46,7 +46,7 @@ class ConnectFour(Game):
         board = (0, 0)
         for i, x in enumerate(board_str):
             # even indexed = O's turn (1); odd = X's turn (0)
-            place(board, int(x), 1 if i % 2 == 0 else 0)
+            board = place(board, int(x) - 1, 1 if i % 2 == 0 else 0)
 
         return board
 
