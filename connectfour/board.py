@@ -32,6 +32,7 @@ def finished_player(player: int) -> bool:
     row = 15
     col = 2113665
     diag = 16843009
+    diag2 = 2130440
 
     for y in range(6):
         for x in range(4):
@@ -50,6 +51,13 @@ def finished_player(player: int) -> bool:
     for y in range(3):
         for x in range(4):
             l = diag << (y * 7 + x)
+
+            if player & l == l:
+                return True
+
+    for y in range(3):
+        for x in range(4):
+            l = diag2 << (y * 7 + x)
 
             if player & l == l:
                 return True
