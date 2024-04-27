@@ -84,16 +84,33 @@ class Playable:
         elif result == -1: print("You lost!")
         else: print("Draw!")
 
-    def benchmark(self, file: str):
+    def benchmark(self, file: str) -> list[float]:
         with open(file, 'r') as f:
-            for line in f.readlines():
+            times = []
+
+            for i, line in enumerate(f.readlines()[:100]):
                 line = line.strip()
-                
-                board = self.game.parse(line)
+
+                board_str, score = line.split(' ')
+
+                board = self.game.parse(board_str)
+                score = int(score)
+
+                if self.game.turn(board) == 1:
+                    score = 1 if score > 0 else (-1 if score < 0 else 0)
+                else:
+                    score = -1 if score > 0 else (1 if score < 0 else 0)
+
                 start_time = time.time()
                 result = self.strategy.minimax(board)
                 duration = time.time() - start_time
 
-                self.game.print_board(board)
-                print(f'Result: {result} | Time: {duration:.5f} seconds')
+                times.append(duration)
+                # self.game.print_board(board)
 
+                if result != score:
+                    print(f"❌ Case {i} | Result: {result}, Score: {score} | Time: {duration * 1000 : .2f} milliseconds")
+                # else:
+                #     print(f"✅ Case {i} | Time: {duration * 1000 : .2f} milliseconds")
+
+            return times
